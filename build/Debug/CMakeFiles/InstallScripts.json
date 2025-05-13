@@ -1,8 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/home/nick/Dokumenty/AGH/WDTS/sokowirowka_st/build/Debug/cmake_install.cmake",
-		"/home/nick/Dokumenty/AGH/WDTS/sokowirowka_st/build/Debug/cmake/stm32cubemx/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

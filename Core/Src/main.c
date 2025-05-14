@@ -31,6 +31,8 @@
 #include "JCR_mug.h"
 #include "JCR_pumps.h"
 #include "JCR_key.h"
+
+#include "I2C_LCD.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -62,9 +64,10 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-    JCR_Mug_EXTI_Callback(GPIO_Pin);
-    JCR_Key_EXTI_Callback(GPIO_Pin);
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  JCR_Mug_EXTI_Callback(GPIO_Pin);
+  JCR_Key_EXTI_Callback(GPIO_Pin);
 }
 
 /* USER CODE END 0 */
@@ -99,19 +102,28 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM2_Init();
-  MX_I2C1_Init();
+  MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
-    JCR_App_Init();
+
+  JCR_App_Init();
+
+  I2C_LCD_Init(I2C_LCD_1);
+  I2C_LCD_SetCursor(I2C_LCD_1, 0, 0);
+  I2C_LCD_WriteString(I2C_LCD_1, "Sokowirowka");
+  I2C_LCD_SetCursor(I2C_LCD_1, 0, 1);
+  I2C_LCD_WriteString(I2C_LCD_1, "<3");
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-    while (1) {
-        JCR_App_Process();
+  while (1)
+  {
+    JCR_App_Process();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    }
+  }
   /* USER CODE END 3 */
 }
 
@@ -167,11 +179,12 @@ void SystemClock_Config(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-    /* User can add his own implementation to report the HAL error return state
-     */
-    __disable_irq();
-    while (1) {
-    }
+  /* User can add his own implementation to report the HAL error return state
+   */
+  __disable_irq();
+  while (1)
+  {
+  }
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -186,9 +199,9 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-    /* User can add his own implementation to report the file name and line
-       number, ex: printf("Wrong parameters value: file %s on line %d\r\n",
-       file, line) */
+  /* User can add his own implementation to report the file name and line
+     number, ex: printf("Wrong parameters value: file %s on line %d\r\n",
+     file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

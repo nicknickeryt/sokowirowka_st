@@ -3,6 +3,7 @@
     "files.associations": {
         "main.h": "c",
         "compare": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "util.h": "c"
     }
 }

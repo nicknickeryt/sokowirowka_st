@@ -58,6 +58,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/I2C_LCD.c
     Core/Src/I2C_LCD_cfg.c
     Core/Src/Util.c
+    Core/Src/sr04.c
 )
 
 # Add include paths

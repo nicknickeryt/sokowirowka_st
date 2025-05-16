@@ -4,6 +4,7 @@
         "main.h": "c",
         "compare": "c",
         "cstdint": "c",
-        "util.h": "c"
+        "util.h": "c",
+        "sr04.h": "c"
     }
 }

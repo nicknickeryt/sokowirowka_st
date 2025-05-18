@@ -1,23 +1,20 @@
 #include "JCR_app.h"
 
+#include <stdio.h>
+
 #include "JCR_key.h"
+#include "JCR_lcd.h"
 #include "JCR_mug.h"
 #include "JCR_pumps.h"
-#include "JCR_lcd.h"
 #include "JCR_sr04.h"
+#include "JCR_containers.h"
 
 #include "main.h"
 #include "stm32f4xx_hal.h"
 
-typedef enum {
-    APP_STATE_IDLE = 0,
-    APP_STATE_JUICE,
-    APP_STATE_WATER,
-    APP_STATE_DONE
-} JCR_AppState_t;
-
 static JCR_AppState_t appState = APP_STATE_IDLE;
 static uint32_t stateStartTime = 0;
+static uint32_t lastLcdUpdateTime = 0;
 
 void JCR_App_Init() {
     JCR_Mug_Init();
@@ -37,9 +34,35 @@ void JCR_App_CheckMugPresent() {
     }
 }
 
-void JCR_App_Process() {
+void JCR_App_LcdPrint_Process() {
+    uint32_t now = HAL_GetTick();
+    if (now - lastLcdUpdateTime < 100) return;
+
+    JCR_Lcd_Clear();
+
+    char bufHeight[16];
+    char bufVolume[16];
+
+    sprintf(bufHeight, "%lu mm", JCR_sr04_GetDistance());
+    JCR_Lcd_Print(bufHeight, 0, 0);
+
+    sprintf(bufVolume, "%lu ml", (uint32_t)JCR_Containers_GetVolumeDeltaCcm());
+    JCR_Lcd_Print(bufVolume, 0, 1);
+
+    lastLcdUpdateTime = now;
+}
+
+void JCR_App_SetState(JCR_AppState_t state) {
+    appState = state;
+    stateStartTime = HAL_GetTick();
+}
+
+void JCR_App_Process() { 
     JCR_Mug_Process();
     JCR_sr04_Process();
+    JCR_Containers_Process();
+
+    JCR_App_LcdPrint_Process();
 
     switch (appState) {
         case APP_STATE_IDLE:
@@ -58,12 +81,15 @@ void JCR_App_Process() {
                 JCR_PumpWater_On();
                 stateStartTime = HAL_GetTick();
                 appState = APP_STATE_WATER;
+                JCR_Containers_StartVolumeMeasurement();
             }
+            JCR_Containers_Process();
+
             JCR_App_CheckMugPresent();
             break;
 
         case APP_STATE_WATER:
-            if (HAL_GetTick() - stateStartTime >= WATER_PUMP_TIME_MS) {
+            if (HAL_GetTick() - stateStartTime >= WATER_PUMP_MAX_TIME_MS) {
                 JCR_PumpWater_Off();
                 appState = APP_STATE_DONE;
             }

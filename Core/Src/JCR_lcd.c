@@ -12,8 +12,9 @@ void JCR_Lcd_Init() {
     HAL_Delay(1000);
 }
 
+void JCR_Lcd_Clear() { I2C_LCD_Clear(I2C_LCD_1); }
+
 void JCR_Lcd_Print(char *str, uint8_t col, uint8_t line) {
-    I2C_LCD_Clear(I2C_LCD_1);
     I2C_LCD_SetCursor(I2C_LCD_1, col, line);
     I2C_LCD_WriteString(I2C_LCD_1, str);
 }

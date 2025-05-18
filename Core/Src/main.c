@@ -30,13 +30,8 @@
 
 #include "JCR_app.h"
 #include "JCR_mug.h"
-#include "JCR_pumps.h"
 #include "JCR_key.h"
 
-#include "I2C_LCD.h"
-#include "sr04.h"
-
-sr04_t sr04;
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,52 +69,14 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   JCR_Key_EXTI_Callback(GPIO_Pin);
 }
 
-typedef enum
-{
-  SR04_IDLE,
-  SR04_WAITING,
-  SR04_READY
-} SR04_State;
 
-SR04_State sr04_state = SR04_IDLE;
-uint32_t sr04_measurement_start = 0;
 
-void r04_process(void)
-{
-  char buf[16];
-
-  switch (sr04_state)
-  {
-  case SR04_IDLE:
-    sr04_trigger(&sr04); // rozpocznij pomiar
-    sr04_measurement_start = HAL_GetTick();
-    sr04_state = SR04_WAITING;
-    break;
-
-  case SR04_WAITING:
-    if (HAL_GetTick() - sr04_measurement_start >= 100)
-    { // odczekaj 100 ms
-      // gotowy do odczytu
-      sr04_state = SR04_READY;
-    }
-    break;
-
-  case SR04_READY:
-    sprintf(buf, "%lu mm", sr04.distance);
-    I2C_LCD_Clear(I2C_LCD_1);
-    I2C_LCD_SetCursor(I2C_LCD_1, 0, 0);
-    I2C_LCD_WriteString(I2C_LCD_1, buf);
-
-    sr04_state = SR04_IDLE; // gotowy do nowego pomiaru
-    break;
-  }
-}
 /* USER CODE END 0 */
 
 /**
- * @brief  The application entry point.
- * @retval int
- */
+  * @brief  The application entry point.
+  * @retval int
+  */
 int main(void)
 {
 
@@ -148,21 +105,11 @@ int main(void)
   MX_TIM2_Init();
   MX_I2C3_Init();
   MX_TIM3_Init();
+  MX_TIM4_Init();
+  MX_TIM10_Init();
   /* USER CODE BEGIN 2 */
 
   JCR_App_Init();
-
-  I2C_LCD_Init(I2C_LCD_1);
-  I2C_LCD_SetCursor(I2C_LCD_1, 0, 0);
-  I2C_LCD_WriteString(I2C_LCD_1, "Sokowirowka");
-  I2C_LCD_SetCursor(I2C_LCD_1, 0, 1);
-  I2C_LCD_WriteString(I2C_LCD_1, "<3");
-
-  sr04.trig_port = TRIG1_GPIO_Port;
-  sr04.trig_pin = TRIG1_Pin;
-  sr04.echo_htim = &htim3;
-  sr04.echo_channel = TIM_CHANNEL_2;
-  sr04_init(&sr04);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -171,9 +118,6 @@ int main(void)
   while (1)
   {
     JCR_App_Process();
-
-    sr04_process();
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -182,22 +126,22 @@ int main(void)
 }
 
 /**
- * @brief System Clock Configuration
- * @retval None
- */
+  * @brief System Clock Configuration
+  * @retval None
+  */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
-   */
+  */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /** Initializes the RCC Oscillators according to the specified parameters
-   * in the RCC_OscInitTypeDef structure.
-   */
+  * in the RCC_OscInitTypeDef structure.
+  */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -208,8 +152,9 @@ void SystemClock_Config(void)
   }
 
   /** Initializes the CPU, AHB and APB buses clocks
-   */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
@@ -226,9 +171,9 @@ void SystemClock_Config(void)
 /* USER CODE END 4 */
 
 /**
- * @brief  This function is executed in case of error occurrence.
- * @retval None
- */
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
@@ -241,14 +186,14 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef USE_FULL_ASSERT
+#ifdef  USE_FULL_ASSERT
 /**
- * @brief  Reports the name of the source file and the source line number
- *         where the assert_param error has occurred.
- * @param  file: pointer to the source file name
- * @param  line: assert_param error line source number
- * @retval None
- */
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */

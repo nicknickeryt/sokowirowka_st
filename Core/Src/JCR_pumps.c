@@ -3,35 +3,22 @@
 #include "tim.h"
 
 void JCR_Pumps_Init() {
-    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3); 
-    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4); 
-
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 0);
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 0);
+    HAL_GPIO_WritePin(PUMP1_GPIO_Port, PUMP1_Pin, 0);
+    HAL_GPIO_WritePin(PUMP2_GPIO_Port, PUMP2_Pin, 0);
 }
 
 void JCR_PumpJuice_On() {
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, JCR_PUMP_PWM_MAX);
+    HAL_GPIO_WritePin(PUMP1_GPIO_Port, PUMP1_Pin, 1);
 }
 
 void JCR_PumpWater_On() {
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, JCR_PUMP_PWM_MAX);
-}
-
-void JCR_PumpJuice_OnWith(uint16_t duty) {
-    if (duty > JCR_PUMP_PWM_MAX) duty = JCR_PUMP_PWM_MAX;
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, duty);
-}
-
-void JCR_PumpWater_OnWith(uint16_t duty) {
-    if (duty > JCR_PUMP_PWM_MAX) duty = JCR_PUMP_PWM_MAX;
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, duty);
+    HAL_GPIO_WritePin(PUMP2_GPIO_Port, PUMP2_Pin, 1);
 }
 
 void JCR_PumpJuice_Off() {
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 0);
+    HAL_GPIO_WritePin(PUMP1_GPIO_Port, PUMP1_Pin, 0);
 }
 
 void JCR_PumpWater_Off() {
-    __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 0);
+    HAL_GPIO_WritePin(PUMP2_GPIO_Port, PUMP2_Pin, 0);
 }

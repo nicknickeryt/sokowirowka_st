@@ -3,6 +3,9 @@
 #include "JCR_key.h"
 #include "JCR_mug.h"
 #include "JCR_pumps.h"
+#include "JCR_lcd.h"
+#include "JCR_sr04.h"
+
 #include "main.h"
 #include "stm32f4xx_hal.h"
 
@@ -20,6 +23,9 @@ void JCR_App_Init() {
     JCR_Mug_Init();
     JCR_Pumps_Init();
     JCR_Key_Init();
+    JCR_Lcd_Init();
+    JCR_sr04_Init();
+
     appState = APP_STATE_IDLE;
 }
 
@@ -33,6 +39,7 @@ void JCR_App_CheckMugPresent() {
 
 void JCR_App_Process() {
     JCR_Mug_Process();
+    JCR_sr04_Process();
 
     switch (appState) {
         case APP_STATE_IDLE:

@@ -57,23 +57,33 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define LED_Pin GPIO_PIN_13
-#define LED_GPIO_Port GPIOC
-#define KEY_Pin GPIO_PIN_0
-#define KEY_GPIO_Port GPIOA
-#define KEY_EXTI_IRQn EXTI0_IRQn
+#define BUTTON_ENCODER_Pin GPIO_PIN_1
+#define BUTTON_ENCODER_GPIO_Port GPIOA
 #define PUMP1_Pin GPIO_PIN_2
 #define PUMP1_GPIO_Port GPIOA
 #define PUMP2_Pin GPIO_PIN_3
 #define PUMP2_GPIO_Port GPIOA
+#define LED_Pin GPIO_PIN_4
+#define LED_GPIO_Port GPIOA
+#define ECHO2_Pin GPIO_PIN_6
+#define ECHO2_GPIO_Port GPIOA
+#define BUTTON_Pin GPIO_PIN_14
+#define BUTTON_GPIO_Port GPIOB
+#define BUTTON_EXTI_IRQn EXTI15_10_IRQn
 #define LCD_SCL_Pin GPIO_PIN_8
 #define LCD_SCL_GPIO_Port GPIOA
+#define ENCB_Pin GPIO_PIN_15
+#define ENCB_GPIO_Port GPIOA
+#define ENCA_Pin GPIO_PIN_3
+#define ENCA_GPIO_Port GPIOB
 #define LCD_SDA_Pin GPIO_PIN_4
 #define LCD_SDA_GPIO_Port GPIOB
 #define ECHO1_TIM_Pin GPIO_PIN_5
 #define ECHO1_TIM_GPIO_Port GPIOB
 #define TRIG1_Pin GPIO_PIN_6
 #define TRIG1_GPIO_Port GPIOB
+#define SERVO_PWM_Pin GPIO_PIN_8
+#define SERVO_PWM_GPIO_Port GPIOB
 #define MUG_DET_Pin GPIO_PIN_9
 #define MUG_DET_GPIO_Port GPIOB
 #define MUG_DET_EXTI_IRQn EXTI9_5_IRQn

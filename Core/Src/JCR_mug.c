@@ -5,20 +5,20 @@ static volatile bool mugWaitFlag = false;
 static volatile bool mugDetected = false;
 
 void JCR_Mug_Init() {
-    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);  // LED off
+    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);  // LED off
 }
 
 void JCR_Mug_Process() {
     if (mugWaitFlag) {
         if (HAL_GPIO_ReadPin(MUG_DET_GPIO_Port, MUG_DET_Pin)) {
             if (HAL_GetTick() - mugStartTime >= MUG_DET_THRESHOLD_MS) {
-                HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);  // LED on
+                HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);  // LED on
                 mugDetected = true;
                 mugWaitFlag = false;
             }
         } else {
             mugWaitFlag = false;
-            HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);  // LED off
+            HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);  // LED off
         }
     }
 }
@@ -40,7 +40,7 @@ void JCR_Mug_EXTI_Callback(uint16_t GPIO_Pin) {
             mugWaitFlag = true;
         } else {
             mugWaitFlag = false;
-            HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);  // LED off
+            HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);  // LED off
         }
     }
 }

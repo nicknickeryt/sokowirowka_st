@@ -55,6 +55,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/JCR_pumps.c
     Core/Src/JCR_app.c
     Core/Src/JCR_key.c
+    Core/Src/JCR_lcd.c
+    Core/Src/JCR_sr04.c
+
     Core/Src/I2C_LCD.c
     Core/Src/I2C_LCD_cfg.c
     Core/Src/Util.c

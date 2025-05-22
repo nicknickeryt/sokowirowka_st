@@ -43,11 +43,14 @@ void JCR_App_LcdPrint_Process() {
     char bufHeight[16];
     char bufVolume[16];
 
-    sprintf(bufHeight, "%lu mm", JCR_sr04_GetDistance());
+    sprintf(bufHeight, "%lu mm", JCR_sr04_GetDistanceWater());
     JCR_Lcd_Print(bufHeight, 0, 0);
 
-    sprintf(bufVolume, "%lu ml", (uint32_t)JCR_Containers_GetVolumeDeltaCcm());
-    JCR_Lcd_Print(bufVolume, 0, 1);
+    sprintf(bufHeight, "%lu mm", JCR_sr04_GetDistanceJuice());
+    JCR_Lcd_Print(bufHeight, 0, 1);
+
+    // sprintf(bufVolume, "%lu ml", (uint32_t)JCR_Containers_GetVolumeDeltaCcm());
+    // JCR_Lcd_Print(bufVolume, 0, 1);
 
     lastLcdUpdateTime = now;
 }

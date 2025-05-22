@@ -15,7 +15,7 @@ void JCR_Containers_Init() {
     currentHeightMm = 0.0f;
 }
 void JCR_Containers_StartVolumeMeasurement() {
-    startHeightMm = JCR_sr04_GetDistance();
+    startHeightMm = JCR_sr04_GetDistanceWater();
     currentHeightMm = startHeightMm;
 }
 
@@ -26,7 +26,7 @@ float JCR_Containers_GetCurrentHeightMm() { return currentHeightMm; }
 float JCR_Containers_GetStartHeightMm() { return startHeightMm; }
 
 void JCR_Containers_Process() {
-    currentHeightMm = JCR_sr04_GetDistance();
+    currentHeightMm = JCR_sr04_GetDistanceWater();
 
     float startHeightCm = startHeightMm / 10.0f;
     float currentHeightCm = currentHeightMm / 10.0f;

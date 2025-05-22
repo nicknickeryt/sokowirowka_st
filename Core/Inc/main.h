@@ -65,8 +65,10 @@ void Error_Handler(void);
 #define PUMP2_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_4
 #define LED_GPIO_Port GPIOA
-#define ECHO2_Pin GPIO_PIN_6
-#define ECHO2_GPIO_Port GPIOA
+#define ECHO2_TIM_Pin GPIO_PIN_6
+#define ECHO2_TIM_GPIO_Port GPIOA
+#define TRIG2_Pin GPIO_PIN_13
+#define TRIG2_GPIO_Port GPIOB
 #define BUTTON_Pin GPIO_PIN_14
 #define BUTTON_GPIO_Port GPIOB
 #define BUTTON_EXTI_IRQn EXTI15_10_IRQn

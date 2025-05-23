@@ -17,7 +17,7 @@ uint32_t sr04_measurement_start = 0;
 static float sr04_water_ema_distance = 0.0f;
 static float sr04_juice_ema_distance = 0.0f;
 
-#define SR04_EMA_ALPHA 0.3f
+#define SR04_EMA_ALPHA 0.05f
 
 void JCR_sr04_Init()
 {

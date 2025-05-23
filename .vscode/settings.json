@@ -6,6 +6,7 @@
         "cstdint": "c",
         "util.h": "c",
         "sr04.h": "c",
-        "jcr_app.h": "c"
+        "jcr_app.h": "c",
+        "random": "c"
     }
 }

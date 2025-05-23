@@ -63,7 +63,8 @@ void sr04_init(sr04_t *sr04_struct){
 void sr04_trigger(sr04_t *sr04_struct){
   // Send pulse to trigger pin
   HAL_GPIO_WritePin(sr04_struct->trig_port, sr04_struct->trig_pin, GPIO_PIN_SET);
-  DWT_Delay_us(20);
+  // DWT_Delay_us(20);
+  HAL_Delay(1);
   HAL_GPIO_WritePin(sr04_struct->trig_port, sr04_struct->trig_pin, GPIO_PIN_RESET);
 }
 

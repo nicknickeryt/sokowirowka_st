@@ -2,13 +2,12 @@
 
 #include <stdio.h>
 
+#include "JCR_containers.h"
 #include "JCR_key.h"
 #include "JCR_lcd.h"
 #include "JCR_mug.h"
 #include "JCR_pumps.h"
 #include "JCR_sr04.h"
-#include "JCR_containers.h"
-
 #include "main.h"
 #include "stm32f4xx_hal.h"
 
@@ -47,10 +46,15 @@ void JCR_App_LcdPrint_Process() {
     JCR_Lcd_Print(bufHeight, 0, 0);
 
     sprintf(bufHeight, "%lu mm", JCR_sr04_GetDistanceJuice());
-    JCR_Lcd_Print(bufHeight, 0, 1);
+    JCR_Lcd_Print(bufHeight, 7, 0);
 
-    // sprintf(bufVolume, "%lu ml", (uint32_t)JCR_Containers_GetVolumeDeltaCcm());
-    // JCR_Lcd_Print(bufVolume, 0, 1);
+    sprintf(bufVolume, "%lu ml",
+            (uint32_t)JCR_Containers_GetVolumeDeltaCcmWater());
+    JCR_Lcd_Print(bufVolume, 0, 1);
+
+    sprintf(bufVolume, "%lu ml",
+            (uint32_t)JCR_Containers_GetVolumeDeltaCcmJuice());
+    JCR_Lcd_Print(bufVolume, 7, 1);
 
     lastLcdUpdateTime = now;
 }
@@ -60,7 +64,9 @@ void JCR_App_SetState(JCR_AppState_t state) {
     stateStartTime = HAL_GetTick();
 }
 
-void JCR_App_Process() { 
+JCR_AppState_t JCR_App_GetState() { return appState; }
+
+void JCR_App_Process() {
     JCR_Mug_Process();
     JCR_sr04_Process();
     JCR_Containers_Process();
@@ -71,22 +77,25 @@ void JCR_App_Process() {
         case APP_STATE_IDLE:
             if (JCR_Mug_IsDetected() && JCR_Key_IsPressed()) {
                 JCR_Mug_ClearDetected();
-                JCR_PumpJuice_On();
-                JCR_PumpWater_Off();
                 stateStartTime = HAL_GetTick();
                 appState = APP_STATE_JUICE;
+
+                JCR_Containers_StartVolumeMeasurementJuice();
+                JCR_Containers_StartVolumeMeasurementWater();
             }
             break;
 
         case APP_STATE_JUICE:
-            if (HAL_GetTick() - stateStartTime >= JUICE_PUMP_TIME_MS) {
+            if (HAL_GetTick() - stateStartTime >= JUICE_PUMP_MAX_TIME_MS) {
                 JCR_PumpJuice_Off();
                 JCR_PumpWater_On();
-                stateStartTime = HAL_GetTick();
                 appState = APP_STATE_WATER;
-                JCR_Containers_StartVolumeMeasurement();
+
+                stateStartTime = HAL_GetTick();
+            } else {
+                JCR_PumpJuice_On();
+                JCR_PumpWater_Off();
             }
-            JCR_Containers_Process();
 
             JCR_App_CheckMugPresent();
             break;
@@ -95,14 +104,19 @@ void JCR_App_Process() {
             if (HAL_GetTick() - stateStartTime >= WATER_PUMP_MAX_TIME_MS) {
                 JCR_PumpWater_Off();
                 appState = APP_STATE_DONE;
+            } else {
+                JCR_PumpJuice_Off();
+                JCR_PumpWater_On();
             }
+
             JCR_App_CheckMugPresent();
             break;
 
         case APP_STATE_DONE:
-            if (!JCR_Mug_IsPresent()) {
-                appState = APP_STATE_IDLE;
-            }
+            JCR_PumpJuice_Off();
+            JCR_PumpWater_Off();
+            if (!JCR_Mug_IsPresent()) appState = APP_STATE_IDLE;
+
             break;
     }
 }

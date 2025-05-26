@@ -107,17 +107,22 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM4_Init();
   MX_TIM10_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
-  JCR_App_Init();
+  // JCR_App_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
   while (1)
   {
-    JCR_App_Process();
+    // HAL_I2C_Master_Transmit(&hi2c1, 0x29 << 1, (uint8_t *)"Hello", 5, 100);
+    uint8_t data[] = {0x01, 0x02, 0x03, 0x04}; // Example data to transmit
+    HAL_I2C_Master_Transmit(&hi2c1, 0x50 << 1, data, sizeof(data), HAL_MAX_DELAY);
+
+    HAL_Delay(1000);
+    // JCR_App_Process();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -80,10 +80,6 @@ void Error_Handler(void);
 #define ENCA_GPIO_Port GPIOB
 #define LCD_SDA_Pin GPIO_PIN_4
 #define LCD_SDA_GPIO_Port GPIOB
-#define ECHO1_TIM_Pin GPIO_PIN_5
-#define ECHO1_TIM_GPIO_Port GPIOB
-#define TRIG1_Pin GPIO_PIN_6
-#define TRIG1_GPIO_Port GPIOB
 #define SERVO_PWM_Pin GPIO_PIN_8
 #define SERVO_PWM_GPIO_Port GPIOB
 #define MUG_DET_Pin GPIO_PIN_9

@@ -47,7 +47,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, PUMP1_Pin|PUMP2_Pin|LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, TRIG2_Pin|TRIG1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(TRIG2_GPIO_Port, TRIG2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : BUTTON_ENCODER_Pin */
   GPIO_InitStruct.Pin = BUTTON_ENCODER_Pin;
@@ -62,12 +62,12 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : TRIG2_Pin TRIG1_Pin */
-  GPIO_InitStruct.Pin = TRIG2_Pin|TRIG1_Pin;
+  /*Configure GPIO pin : TRIG2_Pin */
+  GPIO_InitStruct.Pin = TRIG2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(TRIG2_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : BUTTON_Pin */
   GPIO_InitStruct.Pin = BUTTON_Pin;

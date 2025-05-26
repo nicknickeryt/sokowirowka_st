@@ -21,8 +21,8 @@ static float sr04_juice_ema_distance = 0.0f;
 
 void JCR_sr04_Init()
 {
-    sr04_water.trig_port = TRIG1_GPIO_Port;
-    sr04_water.trig_pin = TRIG1_Pin;
+    // sr04_water.trig_port = TRIG1_GPIO_Port;
+    // sr04_water.trig_pin = TRIG1_Pin;
     sr04_water.echo_htim = &htim3;
     sr04_water.echo_channel = TIM_CHANNEL_2;
     sr04_init(&sr04_water);

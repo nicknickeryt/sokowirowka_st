@@ -22,7 +22,6 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "sr04.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,8 +57,7 @@
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim3;
 /* USER CODE BEGIN EV */
-extern sr04_t sr04_water;
-extern sr04_t sr04_juice;
+
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -220,29 +218,7 @@ void EXTI9_5_IRQHandler(void)
 void TIM3_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM3_IRQn 0 */
-  // Capture interrupt handling
-  if (__HAL_TIM_GET_FLAG(&htim3, TIM_FLAG_CC2) != RESET)
-  {
-    if (__HAL_TIM_GET_IT_SOURCE(&htim3, TIM_IT_CC2) != RESET)
-    {
-      sr04_read_distance(&sr04_water);
-    }
-  }
-  if (__HAL_TIM_GET_FLAG(&htim3, TIM_FLAG_CC1) != RESET)
-  {
-    if (__HAL_TIM_GET_IT_SOURCE(&htim3, TIM_IT_CC1) != RESET)
-    {
-      sr04_read_distance(&sr04_juice);
-    }
-  }
-  // Update interrupt handling
-  if (__HAL_TIM_GET_FLAG(&htim3, TIM_FLAG_UPDATE) != RESET)
-  {
-    if (__HAL_TIM_GET_IT_SOURCE(&htim3, TIM_IT_UPDATE) != RESET)
-    {
-      sr04_water.tim_update_count++;
-    }
-  }
+
   /* USER CODE END TIM3_IRQn 0 */
   HAL_TIM_IRQHandler(&htim3);
   /* USER CODE BEGIN TIM3_IRQn 1 */

@@ -113,6 +113,10 @@ void setAddress_VL53L0X(uint8_t new_addr) {
   g_i2cAddr = new_addr;
 }
 
+void setActiveAddress_VL53L0X(uint8_t new_addr) {
+  g_i2cAddr = new_addr;
+}
+
 uint8_t getAddress_VL53L0X() {
   return g_i2cAddr;
 }

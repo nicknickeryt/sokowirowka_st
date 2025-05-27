@@ -138,6 +138,9 @@ typedef struct{
 //------------------------------------------------------------
 // configures chip i2c and lib for `new_addr` (8 bit, LSB=0)
 void setAddress_VL53L0X(uint8_t new_addr);
+
+void setActiveAddress_VL53L0X(uint8_t new_addr);
+
 // Returns the current I²C address.
 uint8_t getAddress_VL53L0X(void);
 

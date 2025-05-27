@@ -28,7 +28,6 @@ void JCR_App_Init() {
     JCR_Pumps_Init();
     JCR_Key_Init();
     JCR_Lcd_Init();
-    JCR_sr04_Init();
 
     appState = APP_STATE_IDLE;
 
@@ -36,15 +35,47 @@ void JCR_App_Init() {
 		distanceBuf[i] = ' ';
 	}
 
-    setAddress_VL53L0X(0x52);
+    /* Sensor1 */
+    HAL_GPIO_WritePin(XSHUT1_GPIO_Port, XSHUT1_Pin, 1); // enable sensor1  || 0x53
+    HAL_GPIO_WritePin(XSHUT2_GPIO_Port, XSHUT2_Pin, 0); // disable sensor2 || 0x54
+
+    HAL_Delay(10);
+    setActiveAddress_VL53L0X(0x52);
+
 	// Initialise the VL53L0X
 	initVL53L0X(1, &hi2c3);
+    setAddress_VL53L0X(0x60);
 
 	// Configure the sensor for high accuracy and speed in 20 cm.
 	setSignalRateLimit(200);
 	setVcselPulsePeriod(VcselPeriodPreRange, 10);
 	setVcselPulsePeriod(VcselPeriodFinalRange, 14);
-	setMeasurementTimingBudget(300 * 1000UL);
+	setMeasurementTimingBudget(3000 * 1000UL);
+    startContinuous(0);
+
+
+    /* Sensor2 */
+    HAL_GPIO_WritePin(XSHUT1_GPIO_Port, XSHUT1_Pin, 1); // disable sensor1   || 0x53
+    HAL_GPIO_WritePin(XSHUT2_GPIO_Port, XSHUT2_Pin, 1); // enable sensor2   || 0x54
+
+    HAL_Delay(10);
+    setActiveAddress_VL53L0X(0x52);
+
+	// Initialise the VL53L0X
+	initVL53L0X(1, &hi2c3);
+    setAddress_VL53L0X(0x62);
+
+	// Configure the sensor for high accuracy and speed in 20 cm.
+	setSignalRateLimit(200);
+	setVcselPulsePeriod(VcselPeriodPreRange, 10);
+	setVcselPulsePeriod(VcselPeriodFinalRange, 14);
+	setMeasurementTimingBudget(3000 * 1000UL);
+    startContinuous(0);
+
+    HAL_Delay(10);
+
+    // HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
+
 }
 
 void JCR_App_CheckMugPresent() {
@@ -58,7 +89,7 @@ void JCR_App_CheckMugPresent() {
 void JCR_App_LcdPrint_Process() {
 
     uint32_t now = HAL_GetTick();
-    if (now - lastLcdUpdateTime < 200)  {
+    if (now - lastLcdUpdateTime < 10)  {
         return;
     }
     JCR_Lcd_Clear();

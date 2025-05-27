@@ -7,7 +7,7 @@
 #include "JCR_sr04.h"
 
 #define START_HEIGHT_CHANGE_ALPHA 0.05f
-#define VOLUME_CHANGE_ALPHA 0.005f
+#define VOLUME_CHANGE_ALPHA 0.05f
 
 float startHeightMmWater = 0.0f;
 float currentHeightMmWater = 0.0f;
@@ -28,12 +28,14 @@ void JCR_Containers_StartVolumeMeasurementWater() {
     startHeightMmWater = JCR_sr04_GetDistanceWater();
 
     currentHeightMmWater = startHeightMmWater;
+    volumeDeltaCcmJuice = 0.0f;  
 }
 
 void JCR_Containers_StartVolumeMeasurementJuice() {
     startHeightMmJuice = JCR_sr04_GetDistanceJuice();
 
     currentHeightMmJuice = startHeightMmJuice;
+    volumeDeltaCcmWater = 0.0f;  
 }
 
 float JCR_Containers_GetVolumeDeltaCcmWater() { return volumeDeltaCcmWater; }
@@ -89,7 +91,9 @@ void JCR_Containers_Process() {
 
         volumeDeltaCcmWater = VOLUME_CHANGE_ALPHA * volumeRawWater + (1.0f - VOLUME_CHANGE_ALPHA) * volumeDeltaCcmWater;
 
-        if (volumeDeltaCcmWater >= 150.0f && JCR_PumpWater_IsOn())
+        float k = 1.19f;
+
+        if (volumeDeltaCcmWater >= (150.0f * k) && JCR_PumpWater_IsOn())
             JCR_App_SetState(APP_STATE_DONE);
     }
 }

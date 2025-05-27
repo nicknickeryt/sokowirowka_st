@@ -59,6 +59,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/JCR_sr04.c
     Core/Src/JCR_containers.c
 
+    Core/Src/VL53L0X.c
+
     Core/Src/I2C_LCD.c
     Core/Src/I2C_LCD_cfg.c
     Core/Src/Util.c

@@ -8,6 +8,8 @@
 #include "sr04.h"
 #include "tim.h"
 
+#include "VL53L0X.h"
+
 sr04_t sr04_water;
 sr04_t sr04_juice;
 
@@ -37,7 +39,9 @@ void JCR_sr04_Init()
 void SR04_UpdateEma()
 {
 
-    float newValue = (float)sr04_water.distance;
+    // float newValue = (float)sr04_water.distance;
+    statInfo_t_VL53L0X distanceStr;
+    float newValue = readRangeSingleMillimeters(&distanceStr);
     sr04_water_ema_distance = sr04_water_ema_distance == 0.0f
                                   ? newValue
                                   : SR04_EMA_ALPHA * newValue + (1.0f - SR04_EMA_ALPHA) * sr04_water_ema_distance;

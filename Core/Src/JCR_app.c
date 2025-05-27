@@ -11,9 +11,17 @@
 #include "main.h"
 #include "stm32f4xx_hal.h"
 
+#include "VL53L0X.h"
+#include "stdio.h"
+#include "i2c.h"
+
 static JCR_AppState_t appState = APP_STATE_IDLE;
 static uint32_t stateStartTime = 0;
 static uint32_t lastLcdUpdateTime = 0;
+
+char distanceBuf[52];
+uint16_t distance;
+statInfo_t_VL53L0X distanceStr;
 
 void JCR_App_Init() {
     JCR_Mug_Init();
@@ -23,6 +31,20 @@ void JCR_App_Init() {
     JCR_sr04_Init();
 
     appState = APP_STATE_IDLE;
+
+	for (uint8_t i = 0; i < 52; i++) {
+		distanceBuf[i] = ' ';
+	}
+
+    setAddress_VL53L0X(0x52);
+	// Initialise the VL53L0X
+	initVL53L0X(1, &hi2c3);
+
+	// Configure the sensor for high accuracy and speed in 20 cm.
+	setSignalRateLimit(200);
+	setVcselPulsePeriod(VcselPeriodPreRange, 10);
+	setVcselPulsePeriod(VcselPeriodFinalRange, 14);
+	setMeasurementTimingBudget(300 * 1000UL);
 }
 
 void JCR_App_CheckMugPresent() {
@@ -34,9 +56,11 @@ void JCR_App_CheckMugPresent() {
 }
 
 void JCR_App_LcdPrint_Process() {
-    uint32_t now = HAL_GetTick();
-    if (now - lastLcdUpdateTime < 100) return;
 
+    uint32_t now = HAL_GetTick();
+    if (now - lastLcdUpdateTime < 200)  {
+        return;
+    }
     JCR_Lcd_Clear();
 
     char bufHeight[16];
@@ -53,7 +77,8 @@ void JCR_App_LcdPrint_Process() {
     JCR_Lcd_Print(bufVolume, 0, 1);
 
     sprintf(bufVolume, "%lu ml",
-            (uint32_t)JCR_Containers_GetVolumeDeltaCcmJuice());
+        (uint32_t)JCR_Containers_GetVolumeDeltaCcmJuice());
+    // sprintf(distanceBuf, "%lu mm", (uint32_t)distance);
     JCR_Lcd_Print(bufVolume, 7, 1);
 
     lastLcdUpdateTime = now;

@@ -7,6 +7,7 @@
         "util.h": "c",
         "sr04.h": "c",
         "jcr_app.h": "c",
-        "random": "c"
+        "random": "c",
+        "stdio.h": "c"
     }
 }

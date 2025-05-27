@@ -6,8 +6,8 @@
 #include "JCR_pumps.h"
 #include "JCR_sr04.h"
 
-#define START_HEIGHT_CHANGE_ALPHA 0.0005f
-#define VOLUME_CHANGE_ALPHA 0.00005f
+#define START_HEIGHT_CHANGE_ALPHA 0.05f
+#define VOLUME_CHANGE_ALPHA 0.005f
 
 float startHeightMmWater = 0.0f;
 float currentHeightMmWater = 0.0f;
@@ -67,7 +67,7 @@ void JCR_Containers_Process() {
 
         volumeDeltaCcmJuice = VOLUME_CHANGE_ALPHA * volumeRawJuice + (1.0f - VOLUME_CHANGE_ALPHA) * volumeDeltaCcmJuice;
 
-        if (volumeDeltaCcmJuice >= 40.0f && JCR_PumpJuice_IsOn())
+        if (volumeDeltaCcmJuice >= 0.0f && JCR_PumpJuice_IsOn())    // TEMP!!!
             JCR_App_SetState(APP_STATE_WATER);
     }
 

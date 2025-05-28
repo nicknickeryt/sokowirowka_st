@@ -32,6 +32,8 @@
 #include "JCR_mug.h"
 #include "JCR_key.h"
 
+#include "JCR_dispenser.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -107,6 +109,7 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM4_Init();
   MX_TIM10_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
 
   JCR_App_Init();

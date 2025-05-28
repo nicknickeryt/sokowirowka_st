@@ -58,6 +58,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/JCR_lcd.c
     Core/Src/JCR_sr04.c
     Core/Src/JCR_containers.c
+    Core/Src/JCR_dispenser.c
+
 
     Core/Src/VL53L0X.c
 

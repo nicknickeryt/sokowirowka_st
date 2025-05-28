@@ -1,19 +1,20 @@
 #include "JCR_app.h"
 
+#include <stdint.h>
 #include <stdio.h>
 
 #include "JCR_containers.h"
+#include "JCR_dispenser.h"
 #include "JCR_key.h"
 #include "JCR_lcd.h"
 #include "JCR_mug.h"
 #include "JCR_pumps.h"
 #include "JCR_sr04.h"
-#include "main.h"
-#include "stm32f4xx_hal.h"
-
 #include "VL53L0X.h"
-#include "stdio.h"
 #include "i2c.h"
+#include "main.h"
+#include "stdio.h"
+#include "stm32f4xx_hal.h"
 
 static JCR_AppState_t appState = APP_STATE_IDLE;
 static uint32_t stateStartTime = 0;
@@ -28,54 +29,57 @@ void JCR_App_Init() {
     JCR_Pumps_Init();
     JCR_Key_Init();
     JCR_Lcd_Init();
+    JCR_dispenser_init();
 
     appState = APP_STATE_IDLE;
 
-	for (uint8_t i = 0; i < 52; i++) {
-		distanceBuf[i] = ' ';
-	}
+    for (uint8_t i = 0; i < 52; i++) {
+        distanceBuf[i] = ' ';
+    }
 
     /* Sensor1 */
-    HAL_GPIO_WritePin(XSHUT1_GPIO_Port, XSHUT1_Pin, 1); // enable sensor1  || 0x53
-    HAL_GPIO_WritePin(XSHUT2_GPIO_Port, XSHUT2_Pin, 0); // disable sensor2 || 0x54
+    HAL_GPIO_WritePin(XSHUT1_GPIO_Port, XSHUT1_Pin,
+                      1);  // enable sensor1  || 0x53
+    HAL_GPIO_WritePin(XSHUT2_GPIO_Port, XSHUT2_Pin,
+                      0);  // disable sensor2 || 0x54
 
-    HAL_Delay(10);
+    HAL_Delay(100);
     setActiveAddress_VL53L0X(0x52);
 
-	// Initialise the VL53L0X
-	initVL53L0X(1, &hi2c3);
+    // Initialise the VL53L0X
+    initVL53L0X(1, &hi2c3);
     setAddress_VL53L0X(0x60);
 
-	// Configure the sensor for high accuracy and speed in 20 cm.
-	setSignalRateLimit(200);
-	setVcselPulsePeriod(VcselPeriodPreRange, 10);
-	setVcselPulsePeriod(VcselPeriodFinalRange, 14);
-	setMeasurementTimingBudget(3000 * 1000UL);
+    // Configure the sensor for high accuracy and speed in 20 cm.
+    setSignalRateLimit(200);
+    setVcselPulsePeriod(VcselPeriodPreRange, 10);
+    setVcselPulsePeriod(VcselPeriodFinalRange, 14);
+    setMeasurementTimingBudget(3000 * 1000UL);
     startContinuous(0);
-
 
     /* Sensor2 */
-    HAL_GPIO_WritePin(XSHUT1_GPIO_Port, XSHUT1_Pin, 1); // disable sensor1   || 0x53
-    HAL_GPIO_WritePin(XSHUT2_GPIO_Port, XSHUT2_Pin, 1); // enable sensor2   || 0x54
+    HAL_GPIO_WritePin(XSHUT1_GPIO_Port, XSHUT1_Pin,
+                      1);  // disable sensor1   || 0x53
+    HAL_GPIO_WritePin(XSHUT2_GPIO_Port, XSHUT2_Pin,
+                      1);  // enable sensor2   || 0x54
 
-    HAL_Delay(10);
+    HAL_Delay(100);
     setActiveAddress_VL53L0X(0x52);
 
-	// Initialise the VL53L0X
-	initVL53L0X(1, &hi2c3);
+    // Initialise the VL53L0X
+    initVL53L0X(1, &hi2c3);
     setAddress_VL53L0X(0x62);
 
-	// Configure the sensor for high accuracy and speed in 20 cm.
-	setSignalRateLimit(200);
-	setVcselPulsePeriod(VcselPeriodPreRange, 10);
-	setVcselPulsePeriod(VcselPeriodFinalRange, 14);
-	setMeasurementTimingBudget(3000 * 1000UL);
+    // Configure the sensor for high accuracy and speed in 20 cm.
+    setSignalRateLimit(200);
+    setVcselPulsePeriod(VcselPeriodPreRange, 10);
+    setVcselPulsePeriod(VcselPeriodFinalRange, 14);
+    setMeasurementTimingBudget(3000 * 1000UL);
     startContinuous(0);
 
-    HAL_Delay(10);
+    HAL_Delay(100);
 
     // HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
-
 }
 
 void JCR_App_CheckMugPresent() {
@@ -87,9 +91,8 @@ void JCR_App_CheckMugPresent() {
 }
 
 void JCR_App_LcdPrint_Process() {
-
     uint32_t now = HAL_GetTick();
-    if (now - lastLcdUpdateTime < 10)  {
+    if (now - lastLcdUpdateTime < 10) {
         return;
     }
     JCR_Lcd_Clear();
@@ -108,7 +111,7 @@ void JCR_App_LcdPrint_Process() {
     JCR_Lcd_Print(bufVolume, 0, 1);
 
     sprintf(bufVolume, "%lu ml",
-        (uint32_t)JCR_Containers_GetVolumeDeltaCcmJuice());
+            (uint32_t)JCR_Containers_GetVolumeDeltaCcmJuice());
     // sprintf(distanceBuf, "%lu mm", (uint32_t)distance);
     JCR_Lcd_Print(bufVolume, 7, 1);
 
@@ -131,13 +134,18 @@ void JCR_App_Process() {
 
     switch (appState) {
         case APP_STATE_IDLE:
-            if (JCR_Mug_IsDetected() && JCR_Key_IsPressed()) {
-                JCR_Mug_ClearDetected();
-                stateStartTime = HAL_GetTick();
-                appState = APP_STATE_JUICE;
+            if (JCR_Key_IsPressed()) {
+                if (JCR_Mug_IsDetected()) {
+                    JCR_Mug_ClearDetected();
+                    stateStartTime = HAL_GetTick();
+                    appState = APP_STATE_JUICE;
 
-                JCR_Containers_StartVolumeMeasurementJuice();
-                JCR_Containers_StartVolumeMeasurementWater();
+                    JCR_Containers_StartVolumeMeasurementJuice();
+                    JCR_Containers_StartVolumeMeasurementWater();
+                } else {
+                    JCR_dispenser_dispenseCup();
+                    HAL_Delay(500);
+                }
             }
             break;
 

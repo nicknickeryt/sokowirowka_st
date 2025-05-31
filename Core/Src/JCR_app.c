@@ -18,7 +18,6 @@
 
 static JCR_AppState_t appState = APP_STATE_IDLE;
 static uint32_t stateStartTime = 0;
-static uint32_t lastLcdUpdateTime = 0;
 
 char distanceBuf[52];
 uint16_t distance;
@@ -80,6 +79,8 @@ void JCR_App_Init() {
     HAL_Delay(100);
 
     // HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
+
+    JCR_Mug_EXTI_Callback(MUG_DET_Pin);
 }
 
 void JCR_App_CheckMugPresent() {
@@ -88,35 +89,6 @@ void JCR_App_CheckMugPresent() {
         JCR_PumpWater_Off();
         appState = APP_STATE_IDLE;
     }
-}
-
-void JCR_App_LcdPrint_Process() {
-    uint32_t now = HAL_GetTick();
-    if (now - lastLcdUpdateTime < 10) {
-        return;
-    }
-    JCR_Lcd_Clear();
-
-    char bufHeight[16];
-    char bufVolume[16];
-
-    sprintf(bufHeight, "%lu mm", JCR_sensor_GetDistanceWater());
-    JCR_Lcd_Print(bufHeight, 0, 0);
-
-    sprintf(bufHeight, "%lu mm", JCR_sensor_GetDistanceJuice());
-    JCR_Lcd_Print(bufHeight, 7, 0);
-
-    sprintf(bufVolume, "%lu ml",
-            (uint32_t)JCR_Containers_GetVolumeDeltaCcmWater());
-    JCR_Lcd_Print(bufVolume, 0, 1);
-
-    // sprintf(bufVolume, "%lu ml",
-    //         (uint32_t)JCR_Containers_GetVolumeDeltaCcmJuice());
-    sprintf(bufVolume, "%lu enc",
-            (uint32_t)TIM2->CNT/2);
-    JCR_Lcd_Print(bufVolume, 7, 1);
-
-    lastLcdUpdateTime = now;
 }
 
 void JCR_App_SetState(JCR_AppState_t state) {
@@ -130,8 +102,7 @@ void JCR_App_Process() {
     JCR_Mug_Process();
     JCR_sensor_process();
     JCR_Containers_Process();
-
-    JCR_App_LcdPrint_Process();
+    JCR_LcdPrint_Process();
 
     switch (appState) {
         case APP_STATE_IDLE:

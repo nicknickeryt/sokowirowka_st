@@ -32,6 +32,8 @@
 #include "JCR_app.h"
 #include "JCR_mug.h"
 #include "JCR_key.h"
+#include "JCR_lcd.h"
+#include "JCR_containers.h"
 
 #include "JCR_dispenser.h"
 
@@ -70,9 +72,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   JCR_Mug_EXTI_Callback(GPIO_Pin);
   JCR_Key_EXTI_Callback(GPIO_Pin);
+  JCR_Lcd_EXTI_Callback(GPIO_Pin);
 }
-
-
 
 /* USER CODE END 0 */
 
@@ -114,11 +115,11 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
-
+  TIM2->CNT = 2147483647;
   HAL_UART_Transmit_IT(&huart1, (uint8_t *)"JCR Coffee Machine v0.1\r\n", 26);
 
   JCR_App_Init();
-  HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
+  HAL_TIM_Encoder_Start_IT(&htim2, TIM_CHANNEL_ALL);
   /* USER CODE END 2 */
 
   /* Infinite loop */

@@ -4,7 +4,7 @@
 
 #include "JCR_app.h"
 #include "JCR_pumps.h"
-#include "JCR_sr04.h"
+#include "JCR_sensor.h"
 
 #define START_HEIGHT_CHANGE_ALPHA 0.05f
 #define VOLUME_CHANGE_ALPHA 0.05f
@@ -25,14 +25,14 @@ void JCR_Containers_Init() {
     currentHeightMmJuice = 0.0f;
 }
 void JCR_Containers_StartVolumeMeasurementWater() {
-    startHeightMmWater = JCR_sr04_GetDistanceWater();
+    startHeightMmWater = JCR_sensor_GetDistanceWater();
 
     currentHeightMmWater = startHeightMmWater;
     volumeDeltaCcmJuice = 0.0f;  
 }
 
 void JCR_Containers_StartVolumeMeasurementJuice() {
-    startHeightMmJuice = JCR_sr04_GetDistanceJuice();
+    startHeightMmJuice = JCR_sensor_GetDistanceJuice();
 
     currentHeightMmJuice = startHeightMmJuice;
     volumeDeltaCcmWater = 0.0f;  
@@ -52,7 +52,7 @@ float JCR_Containers_GetStartHeightMmJuice() { return startHeightMmJuice; }
 
 void JCR_Containers_Process() {
     if (JCR_App_GetState() == APP_STATE_JUICE) {
-        currentHeightMmJuice = JCR_sr04_GetDistanceJuice();
+        currentHeightMmJuice = JCR_sensor_GetDistanceJuice();
 
         if(currentHeightMmJuice < startHeightMmJuice) {
             startHeightMmJuice = START_HEIGHT_CHANGE_ALPHA * currentHeightMmJuice + (1.0f - START_HEIGHT_CHANGE_ALPHA) * startHeightMmJuice;
@@ -74,7 +74,7 @@ void JCR_Containers_Process() {
     }
 
     else if (JCR_App_GetState() == APP_STATE_WATER) {
-        currentHeightMmWater = JCR_sr04_GetDistanceWater();
+        currentHeightMmWater = JCR_sensor_GetDistanceWater();
 
         if(currentHeightMmWater < startHeightMmWater) {
             startHeightMmWater = START_HEIGHT_CHANGE_ALPHA * currentHeightMmWater + (1.0f - START_HEIGHT_CHANGE_ALPHA) * startHeightMmWater;

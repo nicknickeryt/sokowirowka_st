@@ -9,7 +9,7 @@
 #include "JCR_lcd.h"
 #include "JCR_mug.h"
 #include "JCR_pumps.h"
-#include "JCR_sr04.h"
+#include "JCR_sensor.h"
 #include "VL53L0X.h"
 #include "i2c.h"
 #include "main.h"
@@ -100,19 +100,20 @@ void JCR_App_LcdPrint_Process() {
     char bufHeight[16];
     char bufVolume[16];
 
-    sprintf(bufHeight, "%lu mm", JCR_sr04_GetDistanceWater());
+    sprintf(bufHeight, "%lu mm", JCR_sensor_GetDistanceWater());
     JCR_Lcd_Print(bufHeight, 0, 0);
 
-    sprintf(bufHeight, "%lu mm", JCR_sr04_GetDistanceJuice());
+    sprintf(bufHeight, "%lu mm", JCR_sensor_GetDistanceJuice());
     JCR_Lcd_Print(bufHeight, 7, 0);
 
     sprintf(bufVolume, "%lu ml",
             (uint32_t)JCR_Containers_GetVolumeDeltaCcmWater());
     JCR_Lcd_Print(bufVolume, 0, 1);
 
-    sprintf(bufVolume, "%lu ml",
-            (uint32_t)JCR_Containers_GetVolumeDeltaCcmJuice());
-    // sprintf(distanceBuf, "%lu mm", (uint32_t)distance);
+    // sprintf(bufVolume, "%lu ml",
+    //         (uint32_t)JCR_Containers_GetVolumeDeltaCcmJuice());
+    sprintf(bufVolume, "%lu enc",
+            (uint32_t)TIM2->CNT/2);
     JCR_Lcd_Print(bufVolume, 7, 1);
 
     lastLcdUpdateTime = now;
@@ -127,7 +128,7 @@ JCR_AppState_t JCR_App_GetState() { return appState; }
 
 void JCR_App_Process() {
     JCR_Mug_Process();
-    JCR_sr04_Process();
+    JCR_sensor_process();
     JCR_Containers_Process();
 
     JCR_App_LcdPrint_Process();

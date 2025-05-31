@@ -9,6 +9,9 @@
         "jcr_app.h": "c",
         "random": "c",
         "stdio.h": "c",
-        "stm32f4xx_hal.h": "c"
+        "stm32f4xx_hal.h": "c",
+        "jcr_lcd.h": "c",
+        "vl53l0x.h": "c",
+        "jcr_pumps.h": "c"
     }
 }

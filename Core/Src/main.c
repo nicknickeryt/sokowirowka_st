@@ -20,6 +20,7 @@
 #include "main.h"
 #include "i2c.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -110,9 +111,14 @@ int main(void)
   MX_TIM4_Init();
   MX_TIM10_Init();
   MX_TIM1_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
+
+  HAL_UART_Transmit_IT(&huart1, (uint8_t *)"JCR Coffee Machine v0.1\r\n", 26);
+
   JCR_App_Init();
+  HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
   /* USER CODE END 2 */
 
   /* Infinite loop */

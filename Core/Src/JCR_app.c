@@ -10,11 +10,14 @@
 #include "JCR_mug.h"
 #include "JCR_pumps.h"
 #include "JCR_sensor.h"
+#include "JCR_uart.h"
 #include "VL53L0X.h"
 #include "i2c.h"
 #include "main.h"
 #include "stdio.h"
 #include "stm32f4xx_hal.h"
+#include "JCR_uart.h"
+
 
 static JCR_AppState_t appState = APP_STATE_IDLE;
 static uint32_t stateStartTime = 0;
@@ -29,6 +32,7 @@ void JCR_App_Init() {
     JCR_Key_Init();
     JCR_Lcd_Init();
     JCR_dispenser_init();
+    JCR_uart_init();
 
     appState = APP_STATE_IDLE;
 
@@ -78,8 +82,6 @@ void JCR_App_Init() {
 
     HAL_Delay(100);
 
-    // HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
-
     JCR_Mug_EXTI_Callback(MUG_DET_Pin);
 }
 
@@ -103,12 +105,14 @@ void JCR_App_Process() {
     JCR_sensor_process();
     JCR_Containers_Process();
     JCR_LcdPrint_Process();
+    JCR_uart_Process();
 
     switch (appState) {
         case APP_STATE_IDLE:
-            if (JCR_Key_IsPressed()) {
+            if (JCR_Key_IsPressed() || JCR_uart_IsStartPressed()) {
                 if (JCR_Mug_IsDetected()) {
                     JCR_Mug_ClearDetected();
+                    JCR_uart_SetStartPressed(false);
                     stateStartTime = HAL_GetTick();
                     appState = APP_STATE_JUICE;
 

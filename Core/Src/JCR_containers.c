@@ -89,7 +89,7 @@ void JCR_Containers_Process() {
             (1.0f - VOLUME_CHANGE_ALPHA) * volumeDeltaCcmJuice;
 
         if (volumeDeltaCcmJuice >= ((float)targetMlJuice * kJ) &&
-            JCR_PumpJuice_IsOn())  // TEMP!!!
+            JCR_PumpJuice_IsOn())
             JCR_App_SetState(APP_STATE_WATER);
     }
 
@@ -122,9 +122,9 @@ void JCR_Containers_Process() {
 
 void JCR_Containers_EncoderCallback() {
     uint32_t newEncoderValue = TIM2->CNT / 2;
-    int32_t delta = lastEncoderValue - newEncoderValue;
+    int32_t deltaEncoderValue = lastEncoderValue - newEncoderValue;
 
-    if (delta != 0) {
+    if (deltaEncoderValue != 0) {
         lastEncoderValue = newEncoderValue;
 
         bool pumpActive = JCR_PumpJuice_IsOn() || JCR_PumpWater_IsOn();
@@ -134,11 +134,11 @@ void JCR_Containers_EncoderCallback() {
             case MODE_JUICE: {
                 int juice = JCR_Containers_GetTargetMlJuice();
                 int water = JCR_Containers_GetTargetMlWater();
-                int newJuice = juice + (delta > 0 ? 1 : -1);
+                int newJuice = juice + (deltaEncoderValue > 0 ? 1 : -1);
 
-                if (delta > 0 && juice < 255 && (newJuice + water) <= 200)
+                if (deltaEncoderValue > 0 && juice < 255 && (newJuice + water) <= 200)
                     JCR_Contaners_SetTargetMlJuice((uint8_t)newJuice);
-                else if (delta < 0 && juice > 0 && (newJuice + water) <= 200)
+                else if (deltaEncoderValue < 0 && juice > 0 && (newJuice + water) <= 200)
                     JCR_Contaners_SetTargetMlJuice((uint8_t)newJuice);
 
                 break;
@@ -146,11 +146,11 @@ void JCR_Containers_EncoderCallback() {
             case MODE_WATER: {
                 int water = JCR_Containers_GetTargetMlWater();
                 int juice = JCR_Containers_GetTargetMlJuice();
-                int newWater = water + (delta > 0 ? 1 : -1);
+                int newWater = water + (deltaEncoderValue > 0 ? 1 : -1);
 
-                if (delta > 0 && water < 255 && (juice + newWater) <= 200)
+                if (deltaEncoderValue > 0 && water < 255 && (juice + newWater) <= 200)
                     JCR_Contaners_SetTargetMlWater((uint8_t)newWater);
-                else if (delta < 0 && water > 0 && (juice + newWater) <= 200)
+                else if (deltaEncoderValue < 0 && water > 0 && (juice + newWater) <= 200)
                     JCR_Contaners_SetTargetMlWater((uint8_t)newWater);
 
                 break;

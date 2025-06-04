@@ -2,6 +2,7 @@
 
 #define MODE_JUICE 0
 #define MODE_WATER 1
+#define MODE_STATUS 2
 
 void JCR_Lcd_Init();
 

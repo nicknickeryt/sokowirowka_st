@@ -1,9 +1,8 @@
-#include "usart.h"
-
 #include <stdbool.h>
 #include <stdint.h>
 
 #include "VL53L0X.h"
+#include "usart.h"
 
 void JCR_uart_init();
 void JCR_uart_Process();

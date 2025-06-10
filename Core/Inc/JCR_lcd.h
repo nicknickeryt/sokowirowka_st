@@ -4,6 +4,10 @@
 #define MODE_WATER 1
 #define MODE_STATUS 2
 
+#define CONTAINER_MIN_MM 28
+#define CONTAINER_MAX_MM 237
+#define BAR_WIDTH 15
+
 void JCR_Lcd_Init();
 
 void JCR_Lcd_Clear();

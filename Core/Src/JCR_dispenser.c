@@ -1,4 +1,5 @@
 #include "JCR_dispenser.h"
+
 #include "tim.h"
 
 void JCR_dispenser_init() {
@@ -7,19 +8,19 @@ void JCR_dispenser_init() {
 }
 
 void JCR_dispenser_push() {
-    TIM1->CCR3 = 75; // 60->25
-    HAL_Delay(20); 
-    TIM1->CCR4 = 25; // 25->70
+  TIM1->CCR3 = 75;  // 60->25
+  HAL_Delay(20);
+  TIM1->CCR4 = 25;  // 25->70
 }
 
 void JCR_dispenser_retract() {
-    TIM1->CCR3 = 37;
-    HAL_Delay(20); 
-    TIM1->CCR4 = 68; 
+  TIM1->CCR3 = 37;
+  HAL_Delay(20);
+  TIM1->CCR4 = 68;
 }
 
 void JCR_dispenser_dispenseCup() {
-    JCR_dispenser_push();
-    HAL_Delay(1000); 
-    JCR_dispenser_retract();
+  JCR_dispenser_push();
+  HAL_Delay(1000);
+  JCR_dispenser_retract();
 }

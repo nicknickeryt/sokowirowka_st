@@ -1,9 +1,9 @@
 #ifndef JCR_PUMPS_H
 #define JCR_PUMPS_H
 
-#include "main.h"
-
 #include <stdbool.h>
+
+#include "main.h"
 
 #define JCR_PUMP_PWM_MAX 1000
 
@@ -18,4 +18,4 @@ void JCR_PumpWater_On();
 void JCR_PumpJuice_Off();
 void JCR_PumpWater_Off();
 
-#endif // JCR_PUMPS_H
+#endif  // JCR_PUMPS_H

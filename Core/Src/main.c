@@ -119,10 +119,8 @@ int main(void) {
     MX_USART1_UART_Init();
     /* USER CODE BEGIN 2 */
 
-    TIM2->CNT = 2147483647;
 
     JCR_App_Init();
-    HAL_TIM_Encoder_Start_IT(&htim2, TIM_CHANNEL_ALL);
     /* USER CODE END 2 */
 
     /* Infinite loop */
